@@ -3,7 +3,7 @@
       window.SnakeGame = {};
     }
 
-    var Coord = SnakeGame.Coor = function () {};
+    var Coord = SnakeGame.Coord = function () {};
 
     Coord.plus = function (first, second) {
       return [first[0] + second[0], first[1] + second[1]]
@@ -20,6 +20,9 @@
       return -1; //el not found!
     }
 
+    Coord.is_eq = function (co1, co2) {
+      return (co1[0] === co2[0] && co1[1] === co2[1])
+    };
 
     var Snake = SnakeGame.Snake = function () {
       this.dir = "N";
@@ -58,6 +61,12 @@
           boardStr += "<br>";
         }
         return boardStr;
+    };
+
+    Board.prototype.generateApple = function () {
+        var x = Math.floor((Board.SIZE -1 ) *Math.random());
+        var y = Math.floor((Board.SIZE -1 ) *Math.random());
+        this.apples.push([x,y]); //may over count twice, fix later
     };
 
 })();

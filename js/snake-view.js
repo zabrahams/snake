@@ -8,13 +8,45 @@
     this.$el = $el;
     this.display();
     this.bindKeyEvents();
-    setInterval(this.step.bind(this), 500);
+    this.appleCount = 0;
+    setInterval(this.step.bind(this), 250);
   };
 
-  View.prototype.display = function () {
-      var v = this.board.render();
-      this.$el.html("<p>"+ v + "</p>");
+  // View.prototype.display = function () {
+  //     var v = this.board.render();
+  //     this.$el.html("<p>"+ v + "</p>");
+  //
+  // };
 
+  View.prototype.display = function () {
+    var posArray = []
+    for (var i = 0; i < 30; i++) {
+      for (var j = 0; j < 30; j++) {
+        posArray.push([j, i]);
+      }
+    }
+
+    this.$el.html("<ul class='group'></ul>");
+    for (var i = 0; i < 900; i++) {
+      var $li = $("<li></li>").data("pos", posArray[i]);
+      $("ul").append($li);
+    }
+
+    this.board.snake.segments.forEach( function (segment) {
+      $seg = $("li").filter(function() {
+        var comp = SnakeGame.Coord.is_eq($(this).data('pos'), segment)
+        return comp;
+      });
+      $seg.addClass("snake");
+    });
+
+    this.board.apples.forEach( function (apple) {
+      $seg = $("li").filter(function() {
+        var comp = SnakeGame.Coord.is_eq($(this).data('pos'), apple)
+        return comp;
+      });
+      $seg.addClass("apple");
+    });
   };
 
   View.prototype.bindKeyEvents = function () {
@@ -37,6 +69,10 @@
   View.prototype.step = function () {
     this.board.snake.move();
     this.display();
+    this.appleCount++;
+    if (this.appleCount % 5 === 0) {
+      this.board.generateApple();
+    }
   };
 
 })();
