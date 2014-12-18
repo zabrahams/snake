@@ -38,13 +38,15 @@ li {
 }
 
 h1 {
-  text-shadow:  red 1px 1px , black 2px 2px ;
+  text-shadow:
+    black 2px 2px ,
+    black 2px -2px,
+    black -2px -2px,
+    black -2px 2px;
   position: absolute;
-  color: red;
+  color: #d3d3d3;
   left: 20px;
   top: 20px;
-  font-size: 30px;
-  border: 3px red solid;
-  padding: 10px
+  font-size: 50px;
 
 }
