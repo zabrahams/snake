@@ -1,4 +1,4 @@
-ul, li, body, h1 {
+ul, li, body, h1, section, label {
   border: 0;
   margin: 0;
   padding: 0;
@@ -49,4 +49,22 @@ h1 {
   top: 20px;
   font-size: 50px;
 
+}
+
+label {
+  text-shadow:
+  black 2px 2px ,
+  black 2px -2px,
+  black -2px -2px,
+  black -2px 2px;
+  position: absolute;
+  color: #d3d3d3;
+  left: 40%;
+  top: 35%;
+  font-size: 130px;
+  display: none;
+}
+
+.paused {
+  display: block;
 }

@@ -9,14 +9,9 @@
     this.display();
     this.bindKeyEvents();
     this.appleCount = 0;
+    this.paused = false;
     this.intervalId = setInterval(this.step.bind(this), 50);
   };
-
-  // View.prototype.display = function () {
-  //     var v = this.board.render();
-  //     this.$el.html("<p>"+ v + "</p>");
-  //
-  // };
 
   View.prototype.display = function () {
     var _board = this.board;
@@ -49,26 +44,21 @@
       }
 
     });
-
-    // Old slow
-
-    // this.board.snake.segments.forEach( function (segment) {
-    //   $seg = $("li").filter(function() {
-    //     return SnakeGame.Coord.is_eq($(this).data('pos'), segment);
-    //   });
-    //   $seg.addClass("snake");
-    // });
-    //
-    // this.board.apples.forEach( function (apple) {
-    //   $seg = $("li").filter(function() {
-    //     return SnakeGame.Coord.is_eq($(this).data('pos'), apple);
-    //   });
-    //   $seg.addClass("apple");
-    // });
   };
 
+  View.prototype.togglePause = function () {
+      if (this.pause === true ){
+        this.intervalId = setInterval(this.step.bind(this), 50);
+      }
+      else {
+        clearInterval(this.intervalId);
+      }
+      $("label").toggleClass("paused");
+      this.pause = !this.pause;
+  }
+
   View.prototype.bindKeyEvents = function () {
-    this.$el.on("keydown", this.handleKeyEvent.bind(this));
+    $("body").on("keydown", this.handleKeyEvent.bind(this));
   };
 
   View.prototype.handleKeyEvent = function (event) {
@@ -80,6 +70,8 @@
       this.board.snake.turn("E");
     } else if (event.keyCode === 37 ){
       this.board.snake.turn("W");
+    } else if (event.keyCode === 32 ) {
+      this.togglePause();
     }
   };
 
@@ -95,6 +87,7 @@
     if (this.board.snake.isDead() === true) {
       alert("You're totally dead! Like the deadest snake to ever come from deadsville.");
       clearInterval(this.intervalId);
+      $("body").off("keydown");
     }
   };
 

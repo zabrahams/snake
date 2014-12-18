@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="../css/snake.css">
   </head>
   <body>
+    <label>PAUSED</label>
+
+    <section>
+    </section>
 
     <script src="../js/jquery-2.1.1.js"></script>
     <script src="../js/snake.js"></script>
@@ -13,7 +17,7 @@
     <script charset="utf-8">
        $(function () {
          window.board = new SnakeGame.Board();
-         window.view = new SnakeGame.View(board, $("body"));
+         window.view = new SnakeGame.View(board, $("section"));
        });
     </script>
   </body>
