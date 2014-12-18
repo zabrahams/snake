@@ -32,21 +32,72 @@
     Snake.dir = {N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0]};
 
     Snake.prototype.move = function () {
-      for (var i = 0; i < this.segments.length; i++) {
-        this.segments[i] = Coord.plus(this.segments[i], Snake.dir[this.dir]);
-      }
+      var firstSeg = this.segments[0];
+      newSeg = Coord.plus(firstSeg, Snake.dir[this.dir]);
+      this.segments.pop();
+      this.segments.unshift(newSeg);
     };
+
+    // // Weird tumor style movement
+    // Snake.prototype.move = function () {
+    //   for (var i = 0; i < this.segments.length; i++) {
+    //     this.segments[i] = Coord.plus(this.segments[i], Snake.dir[this.dir]);
+    //   }
+    // };
+
+    Snake.prototype.isDead = function () {
+      var snakeBody = this.segments.slice(1);
+      var snakeHead = this.segments[0];
+      var headX = snakeHead[0];
+      var headY = snakeHead[1];
+      return (headX < 0 ||
+              headX > 29 ||
+              headY < 0 ||
+              headY > 29 ||
+              Coord.indexOf(snakeBody, snakeHead) !== -1)
+    }
 
     Snake.prototype.turn = function (newDir) {
       this.dir = newDir;
     };
 
+    Snake.prototype.grow = function () {
+      var lastSeg = this.segments[this.segments.length - 1];
+      var newSeg = [];
+      if (this.dir === "N") {
+        console.log(lastSeg);
+        console.log(Snake.dir['S'])
+        newSeg = Coord.plus(lastSeg, Snake.dir['S']);
+        this.segments.push(newSeg);
+      } else if (this.dir === "S") {
+        newSeg = Coord.plus(lastSeg, Snake.dir['N']);
+        this.segments.push(newSeg);
+      } else if (this.dir === "E") {
+        newSeg = Coord.plus(lastSeg, Snake.dir['W']);
+        this.segments.push(newSeg);
+      } else if (this.dir === "W") {
+        newSeg = Coord.plus(lastSeg, Snake.dir['E']);
+        this.segments.push(newSeg);
+      }
+    };
+
+
     var Board = SnakeGame.Board = function () {
       this.snake = new Snake();
-      this.apples = [];  // For later!
+      this.apples = [];
+      this.score = 0;
     };
 
     Board.SIZE = 30;
+
+    Board.prototype.eat = function () {
+      var appleIdx = Coord.indexOf(this.apples, this.snake.segments[0]);
+      if (appleIdx !== -1) {
+        this.snake.grow();
+        this.score += 1000;
+        this.apples.splice(appleIdx, 1);
+      }
+    };
 
     Board.prototype.render = function () {
         var boardStr = "";
@@ -64,8 +115,8 @@
     };
 
     Board.prototype.generateApple = function () {
-        var x = Math.floor((Board.SIZE -1 ) *Math.random());
-        var y = Math.floor((Board.SIZE -1 ) *Math.random());
+        var x = Math.floor((Board.SIZE) *Math.random());
+        var y = Math.floor((Board.SIZE) *Math.random());
         this.apples.push([x,y]); //may over count twice, fix later
     };
 

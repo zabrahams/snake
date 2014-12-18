@@ -1,4 +1,4 @@
-ul, li, body {
+ul, li, body, h1 {
   border: 0;
   margin: 0;
   padding: 0;
@@ -12,6 +12,7 @@ ul {
   border: 1px black solid;
   width: 900px;
   margin: auto;
+  background-color: #d3d3d3;
 }
 
 li {
@@ -34,4 +35,16 @@ li {
 
 .apple {
   background-color: red;
+}
+
+h1 {
+  text-shadow:  red 1px 1px , black 2px 2px ;
+  position: absolute;
+  color: red;
+  left: 20px;
+  top: 20px;
+  font-size: 30px;
+  border: 3px red solid;
+  padding: 10px
+
 }

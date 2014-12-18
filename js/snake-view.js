@@ -9,7 +9,7 @@
     this.display();
     this.bindKeyEvents();
     this.appleCount = 0;
-    setInterval(this.step.bind(this), 250);
+    this.intervalId = setInterval(this.step.bind(this), 50);
   };
 
   // View.prototype.display = function () {
@@ -19,6 +19,8 @@
   // };
 
   View.prototype.display = function () {
+    var _board = this.board;
+
     var posArray = []
     for (var i = 0; i < 30; i++) {
       for (var j = 0; j < 30; j++) {
@@ -32,21 +34,37 @@
       $("ul").append($li);
     }
 
-    this.board.snake.segments.forEach( function (segment) {
-      $seg = $("li").filter(function() {
-        var comp = SnakeGame.Coord.is_eq($(this).data('pos'), segment)
-        return comp;
-      });
-      $seg.addClass("snake");
+    this.$el.append("<h1>Score: " + this.board.score + "</h1>")
+
+
+    $("li").each(function () {
+      var $square = $(this);
+      var squarePos = $square.data('pos');
+      if (SnakeGame.Coord.indexOf(_board.apples, squarePos) !== -1) {
+        $square.addClass("apple");
+      }
+
+      if (SnakeGame.Coord.indexOf(_board.snake.segments, squarePos) !== -1) {
+        $square.addClass("snake");
+      }
+
     });
 
-    this.board.apples.forEach( function (apple) {
-      $seg = $("li").filter(function() {
-        var comp = SnakeGame.Coord.is_eq($(this).data('pos'), apple)
-        return comp;
-      });
-      $seg.addClass("apple");
-    });
+    // Old slow
+
+    // this.board.snake.segments.forEach( function (segment) {
+    //   $seg = $("li").filter(function() {
+    //     return SnakeGame.Coord.is_eq($(this).data('pos'), segment);
+    //   });
+    //   $seg.addClass("snake");
+    // });
+    //
+    // this.board.apples.forEach( function (apple) {
+    //   $seg = $("li").filter(function() {
+    //     return SnakeGame.Coord.is_eq($(this).data('pos'), apple);
+    //   });
+    //   $seg.addClass("apple");
+    // });
   };
 
   View.prototype.bindKeyEvents = function () {
@@ -68,10 +86,15 @@
 
   View.prototype.step = function () {
     this.board.snake.move();
+    this.board.eat();
     this.display();
     this.appleCount++;
     if (this.appleCount % 5 === 0) {
       this.board.generateApple();
+    }
+    if (this.board.snake.isDead() === true) {
+      alert("You're totally dead! Like the deadest snake to ever come from deadsville.");
+      clearInterval(this.intervalId);
     }
   };
 
