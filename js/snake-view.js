@@ -6,44 +6,62 @@
   var View = SnakeGame.View = function (board, $el){
     this.board = board;
     this.$el = $el;
-    this.display();
-    this.bindKeyEvents();
     this.appleCount = 0;
     this.paused = false;
+    this.toDraw = { snakeChange: [];
+                    appleChange: []};
+    this.bindKeyEvents();
+    this.makeBoard();
+    this.updateBoard();
     this.intervalId = setInterval(this.step.bind(this), 50);
   };
 
-  View.prototype.display = function () {
-    var _board = this.board;
+  View.prototype.makeBoard = function () {
+    var posArray = [];
 
-    var posArray = []
     for (var i = 0; i < 30; i++) {
       for (var j = 0; j < 30; j++) {
         posArray.push([j, i]);
       }
     }
 
-    this.$el.html("<ul class='group'></ul>");
+    this.boardMatrix = new Array(30);
+    for (var i = 0; i < 30; i++) {
+      this.boardMatrix(i) = new Array(30);
+    }
+
+    var $container = $("<ul class='group'></ul>");
+
     for (var i = 0; i < 900; i++) {
       var $li = $("<li></li>").data("pos", posArray[i]);
       $("ul").append($li);
+      this.boardMatrix[posArray[i][0]][posArray[i][1]] = $li;
     }
 
-    this.$el.append("<h1>Score: " + this.board.score + "</h1>")
+    for (var i = 0; i < this.board.snake.segments.length; i++) {
+      var segX = this.board.snake.segments[i][0];
+      var segy = this.board.snake.segments[i][1];
+      this.boardMatrix[segX][segY].addClass("snake");
+    }
+
+    this.$el.html($container);
+  };
 
 
-    $("li").each(function () {
-      var $square = $(this);
-      var squarePos = $square.data('pos');
-      if (SnakeGame.Coord.indexOf(_board.apples, squarePos) !== -1) {
-        $square.addClass("apple");
-      }
+  View.prototype.updateBoard = function () {
+    var _board = this.board;
 
-      if (SnakeGame.Coord.indexOf(_board.snake.segments, squarePos) !== -1) {
-        $square.addClass("snake");
-      }
+    for (var i = 0; i < this.toDraw.snakeChange.length; i++) {
+      var segX = this.toDraw.snakeChange[i][0];
+      var segy = this.toDraw.snakeChange[i][1];
+      this.boardMatrix[segX][segY].toggleClass("snake");
+    }
 
-    });
+    for (var i = 0; i < this.toDraw.appleChange.length; i++) {
+      var segX = this.toDraw.appleChange[i][0];
+      var segy = this.toDraw.appleChange[i][1];
+      this.boardMatrix[segX][segY].toggleClass("apple");
+    }
   };
 
   View.prototype.togglePause = function () {
