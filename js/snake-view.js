@@ -53,13 +53,17 @@
     for (var i = 0; i < this.toDraw.snakeChange.length; i++) {
       var segX = this.toDraw.snakeChange[i][0];
       var segY = this.toDraw.snakeChange[i][1];
-      this.boardMatrix[segX][segY].toggleClass("snake");
+      if (segX > 0 && segX <= 30 && segY > 0 && segY <= 30 ) {
+        this.boardMatrix[segX][segY].toggleClass("snake");
+      }
     }
 
     for (var i = 0; i < this.toDraw.appleChange.length; i++) {
       var segX = this.toDraw.appleChange[i][0];
       var segY = this.toDraw.appleChange[i][1];
-      this.boardMatrix[segX][segY].toggleClass("apple");
+      if (segX > 0 && segX <= 30 && segY > 0 && segY <= 30 ) {
+        this.boardMatrix[segX][segY].toggleClass("apple");
+      }
     }
   };
 
@@ -111,6 +115,7 @@
     console.log(this.board.snake.segments);
 
     if (this.board.snake.isDead() === true) {
+      console.log("dead");
       alert("You're totally dead! Like the deadest snake to ever come from deadsville.");
       clearInterval(this.intervalId);
       $("body").off("keydown");
