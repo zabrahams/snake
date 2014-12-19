@@ -24,6 +24,19 @@
       return (co1[0] === co2[0] && co1[1] === co2[1])
     };
 
+    Coord.getUniques = function(arr1, arr2) {
+      var uniques = [];
+      for (var i = 0; i < arr1.length; i++) {
+        var dupIdx = SnakeGame.Coord.indexOf( arr2, arr1[i])
+        if (dupIdx === -1) {
+          uniques.push(arr1[i]);
+        } else {
+          arr2.splice(dupIdx, 1);
+        }
+      }
+      return uniques.concat(arr2);
+    }
+
     var Snake = SnakeGame.Snake = function () {
       this.dir = "N";
       this.segments = [[10, 10]];

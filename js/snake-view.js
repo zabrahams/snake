@@ -8,11 +8,10 @@
     this.$el = $el;
     this.appleCount = 0;
     this.paused = false;
-    this.toDraw = { snakeChange: [];
+    this.toDraw = { snakeChange: [],
                     appleChange: []};
     this.bindKeyEvents();
     this.makeBoard();
-    this.updateBoard();
     this.intervalId = setInterval(this.step.bind(this), 50);
   };
 
@@ -27,20 +26,20 @@
 
     this.boardMatrix = new Array(30);
     for (var i = 0; i < 30; i++) {
-      this.boardMatrix(i) = new Array(30);
+      this.boardMatrix[i] = new Array(30);
     }
 
     var $container = $("<ul class='group'></ul>");
 
     for (var i = 0; i < 900; i++) {
       var $li = $("<li></li>").data("pos", posArray[i]);
-      $("ul").append($li);
+      $($container).append($li);
       this.boardMatrix[posArray[i][0]][posArray[i][1]] = $li;
     }
 
     for (var i = 0; i < this.board.snake.segments.length; i++) {
       var segX = this.board.snake.segments[i][0];
-      var segy = this.board.snake.segments[i][1];
+      var segY = this.board.snake.segments[i][1];
       this.boardMatrix[segX][segY].addClass("snake");
     }
 
@@ -53,13 +52,13 @@
 
     for (var i = 0; i < this.toDraw.snakeChange.length; i++) {
       var segX = this.toDraw.snakeChange[i][0];
-      var segy = this.toDraw.snakeChange[i][1];
+      var segY = this.toDraw.snakeChange[i][1];
       this.boardMatrix[segX][segY].toggleClass("snake");
     }
 
     for (var i = 0; i < this.toDraw.appleChange.length; i++) {
       var segX = this.toDraw.appleChange[i][0];
-      var segy = this.toDraw.appleChange[i][1];
+      var segY = this.toDraw.appleChange[i][1];
       this.boardMatrix[segX][segY].toggleClass("apple");
     }
   };
@@ -95,13 +94,22 @@
 
 
   View.prototype.step = function () {
+    var startSnake = this.board.snake.segments.slice();
+    var startApples = this.board.apples.slice();
+
     this.board.snake.move();
     this.board.eat();
-    this.display();
     this.appleCount++;
     if (this.appleCount % 5 === 0) {
       this.board.generateApple();
     }
+
+    this.toDraw.snakeChange = SnakeGame.Coord.getUniques(startSnake, this.board.snake.segments);
+    this.toDraw.appleChange = SnakeGame.Coord.getUniques(startApples, this.board.apples);
+    this.updateBoard();
+
+    console.log(this.board.snake.segments);
+
     if (this.board.snake.isDead() === true) {
       alert("You're totally dead! Like the deadest snake to ever come from deadsville.");
       clearInterval(this.intervalId);
