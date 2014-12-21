@@ -68,14 +68,14 @@
   };
 
   View.prototype.togglePause = function () {
-      if (this.pause === true ){
+      if (this.paused === true ){
         this.intervalId = setInterval(this.step.bind(this), 50);
       }
       else {
         clearInterval(this.intervalId);
       }
       $("label").toggleClass("paused");
-      this.pause = !this.pause;
+      this.paused = !this.paused;
   }
 
   View.prototype.bindKeyEvents = function () {
@@ -83,19 +83,18 @@
   };
 
   View.prototype.handleKeyEvent = function (event) {
-    if (event.keyCode === 38 ){
+    if (event.keyCode === 38 && !this.paused ){
       this.board.snake.turn("N");
-    } else if (event.keyCode === 40 ){
+    } else if (event.keyCode === 40 && !this.paused){
       this.board.snake.turn("S");
-    } else if (event.keyCode === 39 ){
+    } else if (event.keyCode === 39 && !this.paused){
       this.board.snake.turn("E");
-    } else if (event.keyCode === 37 ){
+    } else if (event.keyCode === 37 && !this.paused){
       this.board.snake.turn("W");
     } else if (event.keyCode === 32 ) {
       this.togglePause();
     }
   };
-
 
   View.prototype.step = function () {
     var startSnake = this.board.snake.segments.slice();
@@ -103,16 +102,16 @@
 
     this.board.snake.move();
     this.board.eat();
+
+
     this.appleCount++;
     if (this.appleCount % 5 === 0) {
       this.board.generateApple();
     }
 
-    this.toDraw.snakeChange = SnakeGame.Coord.getUniques(startSnake, this.board.snake.segments);
-    this.toDraw.appleChange = SnakeGame.Coord.getUniques(startApples, this.board.apples);
+    this.toDraw.snakeChange = SnakeGame.Coord.getUniques(startSnake, this.board.snake.segments.slice());
+    this.toDraw.appleChange = SnakeGame.Coord.getUniques(startApples, this.board.apples.slice());
     this.updateBoard();
-
-    console.log(this.board.snake.segments);
 
     if (this.board.snake.isDead() === true) {
       console.log("dead");
